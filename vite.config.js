@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 const dropOrtWasm = { name: 'drop-ort-wasm', enforce: 'post', generateBundle(_, bundle) { for (const k of Object.keys(bundle)) if (/ort-wasm.*\.wasm$/.test(k)) delete bundle[k]; } };
 
 // ===== PRODUCTION URL: the ONLY place to change it (or set a SITE_URL build variable in Cloudflare). No trailing slash. =====
-const SITE_URL = (process.env.SITE_URL || 'https://YOUR-SITE.workers.dev').replace(/\/+$/, '');
+const SITE_URL = (process.env.SITE_URL || 'https://ai-background-remover.vanillabar1905.workers.dev').replace(/\/+$/, '');
 // Fills the canonical URL in index.html and writes robots.txt + sitemap.xml into dist/ from SITE_URL.
 const seo = {
   name: 'seo-files',
