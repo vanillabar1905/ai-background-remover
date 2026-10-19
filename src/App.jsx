@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { removeBackground, refineCutout, clearJob } from './removeBg.js';
+import { Page, Header, Footer, PAGES } from './pages.jsx';
 
 const OK = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_MB = 25;
@@ -10,21 +11,6 @@ const FAQ = [
   ['Why is the first image slower?', 'The small model (about 5 MB) loads once and is cached by your browser. Large images take longer on devices without WebGPU.'],
   ['What formats are supported?', 'JPG, PNG and WebP up to 25 MB. The result is always a PNG.'],
 ];
-
-function Legal({ page }) {
-  const privacy = page === 'privacy';
-  return (<main className="wrap legal"><a href="#/">← Back to the tool</a>
-    <h1>{privacy ? 'Privacy policy' : 'Terms of use'}</h1>
-    {privacy ? <>
-      <p>Images you select are processed locally in your browser. They are not uploaded to our servers.</p>
-      <p>The AI model and its runtime files are served from this site and cached by your browser. Like any website, the hosting provider may keep standard access logs (for example your IP address and requested files).</p>
-      <p>This site currently has no accounts, database, analytics or advertising. If that changes, this policy will be updated first.</p>
-    </> : <>
-      <p>This tool is provided “as is”, without warranty. Results may be imperfect.</p>
-      <p>You are responsible for having the rights to any image you process. Do not use the tool for unlawful purposes.</p>
-    </>}
-    <p className="muted"><small>Template text: have it reviewed and add your contact details before launch.</small></p></main>);
-}
 
 export default function App() {
   const [route, setRoute] = useState(location.hash);
@@ -74,14 +60,11 @@ export default function App() {
     o.toBlob((b) => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'cutout.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }, 'image/png');
   }
 
-  if (route === '#/privacy') return <Legal page="privacy" />;
-  if (route === '#/terms') return <Legal page="terms" />;
+  const page = route.replace('#/', '');
+  if (route.startsWith('#/') && PAGES[page]) return <Page page={page} />;
 
   return (<>
-    <header className="top"><div className="wrap row">
-      <a className="logo" href="#/">Cutout</a>
-      <nav aria-label="Primary"><a href="#how">How it works</a><a href="#faq">FAQ</a><a href="#/privacy">Privacy</a></nav>
-    </div></header>
+    <Header home />
     <main className="wrap">
       <section className="tool" aria-labelledby="title">
         <h1 id="title">Remove Image Background</h1>
@@ -147,6 +130,6 @@ export default function App() {
       <section id="faq" className="info"><h2>Questions</h2>
         {FAQ.map(([q, a]) => <details key={q}><summary>{q}</summary><p>{a}</p></details>)}</section>
     </main>
-    <footer className="wrap foot"><small>© Cutout</small><small><a href="#/privacy">Privacy</a> · <a href="#/terms">Terms</a></small></footer>
+    <Footer />
   </>);
 }
